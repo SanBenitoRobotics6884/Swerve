@@ -6,7 +6,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final class Swerve {
-    public static final double STEER_kP = 2.0;
+    public static final double STEER_kP = 1.3;
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
 
@@ -40,17 +40,17 @@ public final class Constants {
     public static final boolean FR_DRIVE_INVERTED = false;
     public static final boolean FL_DRIVE_INVERTED = false;
     public static final boolean BR_DRIVE_INVERTED = false;
-    public static final boolean BL_DRIVE_INVERTED = false;
+    public static final boolean BL_DRIVE_INVERTED = true;
 
-    public static final boolean FR_STEER_INVERTED = false;
-    public static final boolean FL_STEER_INVERTED = false;
-    public static final boolean BR_STEER_INVERTED = false;
-    public static final boolean BL_STEER_INVERTED = false;
+    public static final boolean FR_STEER_INVERTED = true;
+    public static final boolean FL_STEER_INVERTED = true;
+    public static final boolean BR_STEER_INVERTED = true;
+    public static final boolean BL_STEER_INVERTED = true;
 
-    public static final double FR_OFFSET_DEGREES = 0;
-    public static final double FL_OFFSET_DEGREES = 0;
-    public static final double BR_OFFSET_DEGREES = 0;
-    public static final double BL_OFFSET_DEGREES = 0;
+    public static final double FR_OFFSET_DEGREES = 157.6;
+    public static final double FL_OFFSET_DEGREES = 42.9;
+    public static final double BR_OFFSET_DEGREES = 77.3;
+    public static final double BL_OFFSET_DEGREES = 99.0;
 
     public static final double APOTHEM = Units.inchesToMeters(10.625);
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);

@@ -10,6 +10,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 
 import static frc.robot.Constants.Swerve.*;
 
@@ -94,6 +95,10 @@ public class SwerveModule {
 
   public double getSpeedPercentOutput() {
     return m_speedPercentOutput;
+  }
+
+  public double getDegrees() {
+    return Units.rotationsToDegrees(m_steerEncoder.getAbsolutePosition());
   }
 
 }

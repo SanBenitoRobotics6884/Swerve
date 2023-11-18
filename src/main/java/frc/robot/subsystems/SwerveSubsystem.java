@@ -17,6 +17,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleTopic;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SwerveModule;
 
@@ -87,7 +88,7 @@ public class SwerveSubsystem extends SubsystemBase {
       m_moduleMeasurements[2 * i] = m_modules[i].getAngleDegrees();
       m_moduleMeasurements[2 * i + 1] = m_modules[i].getVelocity();
       m_moduleSetpoints[2 * i] = m_modules[i].getDesiredAngleDegrees();
-      m_moduleSetpoints[2 * i + 1] = m_modules[i].getSpeedPercentOutput();
+      m_moduleSetpoints[2 * i + 1] = m_modules[i].getVelocity();
     }
 
     m_pose = m_odometry.update(getAngle(), m_modulePositions);
@@ -97,6 +98,11 @@ public class SwerveSubsystem extends SubsystemBase {
     m_moduleMeasurementsPublisher.accept(m_moduleMeasurements);
     m_moduleSetpointsPublisher.accept(m_moduleSetpoints);
     m_gyroAnglePublisher.accept(m_gyroAngle);
+
+    SmartDashboard.putNumber("FR", m_modules[0].getDegrees());
+    SmartDashboard.putNumber("FL", m_modules[1].getDegrees());
+    SmartDashboard.putNumber("BR", m_modules[2].getDegrees());
+    SmartDashboard.putNumber("BL", m_modules[3].getDegrees());
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
