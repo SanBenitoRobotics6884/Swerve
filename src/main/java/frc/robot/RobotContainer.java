@@ -20,14 +20,14 @@ public class RobotContainer {
 
   private DefaultDrive m_defaultDrive = new DefaultDrive(
       m_swerveSubsystem,
-      () -> input(m_controller.getLeftY(), SQUARED_INPUTS),
-      () -> input(m_controller.getLeftX(), SQUARED_INPUTS),
+      () -> input(getLeftY(), SQUARED_INPUTS),
+      () -> input(getLeftX(), SQUARED_INPUTS),
       () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
 
   private FieldDrive m_fieldDrive = new FieldDrive(
       m_swerveSubsystem,
-      () -> input(m_controller.getLeftY(), SQUARED_INPUTS),
-      () -> input(m_controller.getLeftX(), SQUARED_INPUTS),
+      () -> input(getLeftY(), SQUARED_INPUTS),
+      () -> input(getLeftX(), SQUARED_INPUTS),
       () -> input(m_controller.getRightX(), SQUARED_INPUTS)); 
 
   public RobotContainer() {
@@ -39,6 +39,9 @@ public class RobotContainer {
   private void configureBindings() {
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
+    //m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::setOffsetsToCANCoderMeasurement));
+    //m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::setOffsetsToZero));
+    //m_controller.rightBumper().onTrue(Commands.runOnce(m_swerveSubsystem::printOffsets));
   }
 
   public Command getAutonomousCommand() {
@@ -47,5 +50,21 @@ public class RobotContainer {
 
   private double input(double input, boolean squared) {
     return squared ? (input > 0 ? 1 : -1) * Math.pow(input, 2) : input;
+  }
+
+  private double getLeftY() {
+    double leftY = m_controller.getLeftY();
+    if (Math.hypot(m_controller.getLeftX(), leftY) < 0.1) {
+      return 0;
+    }
+    return leftY;
+  }
+
+  private double getLeftX() {
+    double leftX = m_controller.getLeftX();
+    if (Math.hypot(leftX, m_controller.getLeftY()) < 0.1) {
+      return 0;
+    }
+    return leftX;
   }
 }

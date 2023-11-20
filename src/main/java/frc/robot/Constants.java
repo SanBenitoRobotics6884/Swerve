@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.I2C;
 
 public final class Constants {
 
@@ -38,7 +39,7 @@ public final class Constants {
     public static final int PIGEON_ID = 13;
 
     public static final boolean FR_DRIVE_INVERTED = false;
-    public static final boolean FL_DRIVE_INVERTED = false;
+    public static final boolean FL_DRIVE_INVERTED = true;
     public static final boolean BR_DRIVE_INVERTED = false;
     public static final boolean BL_DRIVE_INVERTED = true;
 
@@ -47,10 +48,10 @@ public final class Constants {
     public static final boolean BR_STEER_INVERTED = true;
     public static final boolean BL_STEER_INVERTED = true;
 
-    public static final double FR_OFFSET_DEGREES = 157.6;
-    public static final double FL_OFFSET_DEGREES = 42.9;
-    public static final double BR_OFFSET_DEGREES = 77.3;
-    public static final double BL_OFFSET_DEGREES = 99.0;
+    public static final double FR_OFFSET_DEGREES = -199.6; // 157.6
+    public static final double FL_OFFSET_DEGREES = -146.6; // 42.9
+    public static final double BR_OFFSET_DEGREES = -325.0; // 77.3
+    public static final double BL_OFFSET_DEGREES = -325.4; // 99.0
 
     public static final double APOTHEM = Units.inchesToMeters(10.625);
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);

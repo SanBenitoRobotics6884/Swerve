@@ -53,19 +53,18 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveDriveOdometry m_odometry;
 
   // This is for advantage scope
-  private NetworkTable m_moduleStatesTable = 
-      NetworkTableInstance.getDefault().getTable("Module States");
-  private DoubleArrayTopic m_moduleMeasurementsTopic = 
-      m_moduleStatesTable.getDoubleArrayTopic("measurements");
-  private DoubleArrayTopic m_moduleSetpointsTopic =
-      m_moduleStatesTable.getDoubleArrayTopic("setpoints");
-  private DoubleTopic m_gyroAngleTopic = m_moduleStatesTable.getDoubleTopic("gyro angle");
-  private DoubleArrayPublisher m_moduleMeasurementsPublisher = m_moduleMeasurementsTopic.publish();
-  private DoubleArrayPublisher m_moduleSetpointsPublisher = m_moduleSetpointsTopic.publish();
-  private DoublePublisher m_gyroAnglePublisher = m_gyroAngleTopic.publish();
+  private DoubleArrayPublisher m_moduleMeasurementsPublisher = 
+      NetworkTableInstance.getDefault().getTable("Module States").getDoubleArrayTopic("measurements").publish();
+  private DoubleArrayPublisher m_moduleSetpointsPublisher = 
+      NetworkTableInstance.getDefault().getTable("Module States").getDoubleArrayTopic("setpoints").publish();
+  private DoublePublisher m_gyroAnglePublisher = 
+      NetworkTableInstance.getDefault().getTable("Module States").getDoubleTopic("gyro angle").publish();
+  private DoubleArrayPublisher m_posePublisher =
+      NetworkTableInstance.getDefault().getTable("Odometry").getDoubleArrayTopic("pose").publish();
   private double[] m_moduleMeasurements = new double[8];
   private double[] m_moduleSetpoints = new double[8];
   private double m_gyroAngle;
+  private double[] m_poseAsArray = new double[3];
 
   /** Creates a new SwerveSubsystem. */
   public SwerveSubsystem() {
@@ -84,20 +83,38 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     for (int i = 0; i < 4; i++) {
       m_modulePositions[i] = m_modules[i].getModulePosition();
-      // this is for advantage scope
-      m_moduleMeasurements[2 * i] = m_modules[i].getAngleDegrees();
-      m_moduleMeasurements[2 * i + 1] = m_modules[i].getVelocity();
-      m_moduleSetpoints[2 * i] = m_modules[i].getDesiredAngleDegrees();
-      m_moduleSetpoints[2 * i + 1] = m_modules[i].getVelocity();
     }
+          // this is for advantage scope
+    m_moduleMeasurements[0] = m_modules[1].getAngleDegrees(); // FL
+    m_moduleMeasurements[1] = m_modules[1].getVelocity();     // FL
+    m_moduleMeasurements[2] = m_modules[0].getAngleDegrees(); // FR
+    m_moduleMeasurements[3] = m_modules[0].getVelocity();     // FR
+    m_moduleMeasurements[4] = m_modules[3].getAngleDegrees(); // BL
+    m_moduleMeasurements[5] = m_modules[3].getVelocity();     // BL
+    m_moduleMeasurements[6] = m_modules[2].getAngleDegrees(); // BR
+    m_moduleMeasurements[7] = m_modules[2].getVelocity();     // BR
+
+    m_moduleSetpoints[0] = m_modules[1].getDesiredAngleDegrees(); // FL
+    m_moduleSetpoints[1] = m_modules[1].getVelocity();            // FL
+    m_moduleSetpoints[2] = m_modules[0].getDesiredAngleDegrees(); // FR
+    m_moduleSetpoints[3] = m_modules[0].getVelocity();            // FR
+    m_moduleSetpoints[4] = m_modules[3].getDesiredAngleDegrees(); // BL
+    m_moduleSetpoints[5] = m_modules[3].getVelocity();            // BL
+    m_moduleSetpoints[6] = m_modules[2].getDesiredAngleDegrees(); // BR
+    m_moduleSetpoints[7] = m_modules[2].getVelocity();            // BR
 
     m_pose = m_odometry.update(getAngle(), m_modulePositions);
+
+    m_poseAsArray[0] = m_pose.getX();
+    m_poseAsArray[1] = m_pose.getY();
+    m_poseAsArray[2] = m_pose.getRotation().getDegrees();
 
     // this is for advantage scope
     m_gyroAngle = m_gyro.getYaw();
     m_moduleMeasurementsPublisher.accept(m_moduleMeasurements);
     m_moduleSetpointsPublisher.accept(m_moduleSetpoints);
     m_gyroAnglePublisher.accept(m_gyroAngle);
+    m_posePublisher.accept(m_poseAsArray);
 
     SmartDashboard.putNumber("FR", m_modules[0].getDegrees());
     SmartDashboard.putNumber("FL", m_modules[1].getDegrees());
@@ -128,6 +145,24 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void zeroYaw() {
     m_gyro.setYaw(0);
+  }
+
+  public void setOffsetsToZero() {
+    for (SwerveModule module : m_modules) {
+      module.setCANCoderOffsetDegrees(0);
+    }
+  }
+
+  public void setOffsetsToCANCoderMeasurement() {
+    for (SwerveModule module : m_modules) {
+      module.setCANCoderOffsetDegrees(module.getDegrees());
+    }
+  }
+
+  public void printOffsets() {
+    for (SwerveModule module : m_modules) {
+      System.out.println(module.getCANCoderOffsetDegrees());
+    }
   }
 
 }

@@ -67,6 +67,9 @@ public class SwerveModule {
     m_driveMotor.set(MAX_OUTPUT * state.speedMetersPerSecond);
 
     m_speedPercentOutput = state.speedMetersPerSecond;
+    
+    //m_steerMotor.set(0);
+    //m_driveMotor.set(0);
   }
 
   public Rotation2d getAngleMeasurement() {
@@ -99,6 +102,14 @@ public class SwerveModule {
 
   public double getDegrees() {
     return Units.rotationsToDegrees(m_steerEncoder.getAbsolutePosition());
+  }
+
+  public void setCANCoderOffsetDegrees(double degrees) {
+    m_steerEncoder.configMagnetOffset(degrees);
+  }
+
+  public double getCANCoderOffsetDegrees() {
+    return m_steerEncoder.configGetMagnetOffset();
   }
 
 }
