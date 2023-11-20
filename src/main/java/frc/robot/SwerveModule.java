@@ -7,6 +7,8 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -15,6 +17,12 @@ import edu.wpi.first.math.util.Units;
 import static frc.robot.Constants.Swerve.*;
 
 public class SwerveModule {
+  public enum SteerMode {
+    NO_FILTER,
+    MOVING_AVERAGE,
+    SLEW_RATE_LIMITER;
+  }
+
   private CANSparkMax m_driveMotor;
   private CANSparkMax m_steerMotor;
 
@@ -27,6 +35,9 @@ public class SwerveModule {
   private Rotation2d m_angleReference;
 
   private double m_speedPercentOutput;
+
+  private LinearFilter m_movingAverage = LinearFilter.movingAverage(5);
+  private SlewRateLimiter m_rateLimiter = new SlewRateLimiter(4.0);
     
   public SwerveModule(int driveID, int steerID, int encoderID, boolean driveInverted, 
                       boolean steerInverted, double magnetOffset) {
