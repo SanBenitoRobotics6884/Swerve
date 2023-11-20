@@ -68,6 +68,7 @@ public class SwerveModule {
   }
 
   public void setState(SwerveModuleState state) {
+    
     m_angleMeasurement = Rotation2d.fromRotations(m_steerEncoder.getAbsolutePosition());
     m_angleReference = state.angle;
 
