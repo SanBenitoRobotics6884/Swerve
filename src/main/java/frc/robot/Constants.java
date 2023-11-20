@@ -48,10 +48,10 @@ public final class Constants {
     public static final boolean BR_STEER_INVERTED = true;
     public static final boolean BL_STEER_INVERTED = true;
 
-    public static final double FR_OFFSET_DEGREES = -199.6; // 157.6
-    public static final double FL_OFFSET_DEGREES = -146.6; // 42.9
-    public static final double BR_OFFSET_DEGREES = -325.0; // 77.3
-    public static final double BL_OFFSET_DEGREES = -325.4; // 99.0
+    public static final double FR_OFFSET_DEGREES = -24.4; // 157.6
+    public static final double FL_OFFSET_DEGREES = -120.2; // 42.9
+    public static final double BR_OFFSET_DEGREES = -266.6; // 77.3
+    public static final double BL_OFFSET_DEGREES = -165.5; // 99.0
 
     public static final double APOTHEM = Units.inchesToMeters(10.625);
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);
