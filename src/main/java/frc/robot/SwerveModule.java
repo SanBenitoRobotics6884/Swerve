@@ -17,11 +17,6 @@ import edu.wpi.first.math.util.Units;
 import static frc.robot.Constants.Swerve.*;
 
 public class SwerveModule {
-  public enum SteerMode {
-    NO_FILTER,
-    MOVING_AVERAGE,
-    SLEW_RATE_LIMITER;
-  }
 
   private CANSparkMax m_driveMotor;
   private CANSparkMax m_steerMotor;
@@ -36,8 +31,8 @@ public class SwerveModule {
 
   private double m_speedPercentOutput;
 
-  private LinearFilter m_movingAverage = LinearFilter.movingAverage(5);
-  private SlewRateLimiter m_rateLimiter = new SlewRateLimiter(4.0);
+  private LinearFilter m_steerMovingAverage = LinearFilter.movingAverage(5);
+  private SlewRateLimiter m_speedLimiter = new SlewRateLimiter(2.0);
     
   public SwerveModule(int driveID, int steerID, int encoderID, boolean driveInverted, 
                       boolean steerInverted, double magnetOffset) {
@@ -72,11 +67,11 @@ public class SwerveModule {
     m_angleMeasurement = Rotation2d.fromRotations(m_steerEncoder.getAbsolutePosition());
     m_angleReference = state.angle;
 
-    m_steerMotor.set(m_steerController.calculate(
+    m_steerMotor.set(m_steerMovingAverage.calculate(m_steerController.calculate(
         m_angleMeasurement.getRotations(),
-        m_angleReference.getRotations()));
+        m_angleReference.getRotations())));
 
-    m_driveMotor.set(MAX_OUTPUT * state.speedMetersPerSecond);
+    m_driveMotor.set(m_speedLimiter.calculate(MAX_OUTPUT * state.speedMetersPerSecond));
 
     m_speedPercentOutput = state.speedMetersPerSecond;
     

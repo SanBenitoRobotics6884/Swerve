@@ -11,7 +11,7 @@ public final class Constants {
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
 
-    public static final double MAX_OUTPUT = 0.2;
+    public static final double MAX_OUTPUT = 0.6;
 
     public static final boolean SQUARED_INPUTS = false;
 
