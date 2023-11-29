@@ -11,13 +11,14 @@ public final class Constants {
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
 
-    public static final double MAX_OUTPUT = 0.6;
+    public static final double MAX_OUTPUT = 0.3;
 
     public static final boolean SQUARED_INPUTS = false;
 
     public static final double WHEEL_RADIUS = 2.0; // inches, need to double check
+    public static final double GEAR_RATIO = 8.14;
     public static final double POSITION_CONVERSION = 
-        2.0 * Math.PI * Units.inchesToMeters(WHEEL_RADIUS); // meters per rotation
+        2.0 * Math.PI * Units.inchesToMeters(WHEEL_RADIUS) / GEAR_RATIO; // meters per rotation
     public static final double VELOCITY_CONVERSION = 
         POSITION_CONVERSION / 60.0; // meters per second
 

@@ -39,6 +39,7 @@ public class RobotContainer {
   private void configureBindings() {
     m_controller.a().toggleOnTrue(m_fieldDrive);
     m_controller.y().onTrue(Commands.runOnce(m_swerveSubsystem::zeroYaw));
+    m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::zeroPose));
     //m_controller.x().onTrue(Commands.runOnce(m_swerveSubsystem::setOffsetsToCANCoderMeasurement));
     //m_controller.b().onTrue(Commands.runOnce(m_swerveSubsystem::setOffsetsToZero));
     //m_controller.rightBumper().onTrue(Commands.runOnce(m_swerveSubsystem::printOffsets));

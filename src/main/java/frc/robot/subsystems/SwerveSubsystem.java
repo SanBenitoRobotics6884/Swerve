@@ -105,8 +105,8 @@ public class SwerveSubsystem extends SubsystemBase {
 
     m_pose = m_odometry.update(getAngle(), m_modulePositions);
 
-    m_poseAsArray[0] = m_pose.getX();
-    m_poseAsArray[1] = m_pose.getY();
+    m_poseAsArray[0] = -m_pose.getX();
+    m_poseAsArray[1] = -m_pose.getY();
     m_poseAsArray[2] = m_pose.getRotation().getDegrees();
 
     // this is for advantage scope
@@ -116,10 +116,11 @@ public class SwerveSubsystem extends SubsystemBase {
     m_gyroAnglePublisher.accept(m_gyroAngle);
     m_posePublisher.accept(m_poseAsArray);
 
-    SmartDashboard.putNumber("FR", m_modules[0].getDegrees());
-    SmartDashboard.putNumber("FL", m_modules[1].getDegrees());
-    SmartDashboard.putNumber("BR", m_modules[2].getDegrees());
-    SmartDashboard.putNumber("BL", m_modules[3].getDegrees());
+    SmartDashboard.putNumber("FR", m_modules[0].getDriveEncoderPosition());
+    SmartDashboard.putNumber("FL", m_modules[1].getDriveEncoderPosition());
+    SmartDashboard.putNumber("BR", m_modules[2].getDriveEncoderPosition());
+    SmartDashboard.putNumber("BL", m_modules[3].getDriveEncoderPosition());
+
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
@@ -163,6 +164,14 @@ public class SwerveSubsystem extends SubsystemBase {
     for (SwerveModule module : m_modules) {
       System.out.println(module.getCANCoderOffsetDegrees());
     }
+  }
+
+  public void zeroPose() {
+    m_pose = new Pose2d();
+    m_odometry.resetPosition(
+      new Rotation2d(), 
+      m_modulePositions, 
+      m_pose);
   }
 
 }

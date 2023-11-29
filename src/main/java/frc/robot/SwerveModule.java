@@ -91,6 +91,10 @@ public class SwerveModule {
     return new SwerveModulePosition(m_driveEncoder.getPosition(), getAngleMeasurement());
   }
 
+  public double getDriveEncoderPosition() {
+    return m_driveEncoder.getPosition();
+  }
+
   public double getAngleDegrees() {
     return m_angleMeasurement.getDegrees();
   }
