@@ -12,12 +12,8 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleTopic;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SwerveModule;
 
@@ -103,11 +99,10 @@ public class SwerveSubsystem extends SubsystemBase {
     m_gyroAnglePublisher.accept(m_gyroAngle);
     m_posePublisher.accept(m_poseAsArray);
 
-    SmartDashboard.putNumber("FR", m_modules[0].getDriveEncoderPosition());
-    SmartDashboard.putNumber("FL", m_modules[1].getDriveEncoderPosition());
-    SmartDashboard.putNumber("BR", m_modules[2].getDriveEncoderPosition());
-    SmartDashboard.putNumber("BL", m_modules[3].getDriveEncoderPosition());
-
+    m_modules[0].putData("FR");
+    m_modules[1].putData("FL");
+    m_modules[2].putData("BR");
+    m_modules[3].putData("BL");
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
@@ -133,6 +128,12 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void zeroYaw() {
     m_gyro.setYaw(0);
+  }
+
+  public void seedModuleMeasurements() {
+    for (int i = 0; i < 4; i++) {
+      m_modules[i].setIntegratedEncoderPositionToAbsoluteEncoderMeasurement();
+    }
   }
 
   public void setOffsetsToZero() {

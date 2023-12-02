@@ -8,14 +8,12 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import static frc.robot.Constants.Swerve.*;
 
@@ -50,7 +48,7 @@ public class SwerveModule {
     m_steerAbsoluteEncoder.configAllSettings(config);
 
     m_steerIntegratedEncoder = m_steerMotor.getEncoder();
-    m_steerIntegratedEncoder.setPositionConversionFactor(STEER_GEAR_RATIO);
+    m_steerIntegratedEncoder.setPositionConversionFactor(STEER_POSITION_CONVERSION);
     m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition());
 
     m_driveEncoder = m_driveMotor.getEncoder();
@@ -88,6 +86,10 @@ public class SwerveModule {
         m_driveFeedforward.calculate(m_velocityReference));
   }
 
+  public void setIntegratedEncoderPositionToAbsoluteEncoderMeasurement() {
+    m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition());
+  }
+
   public Rotation2d getRotation2d() {
     return Rotation2d.fromRotations(m_steerAbsoluteEncoder.getAbsolutePosition());
   }
@@ -105,7 +107,7 @@ public class SwerveModule {
   }
 
   public double getAngleDegrees() {
-    return Units.rotationsToDegrees(m_steerAbsoluteEncoder.getAbsolutePosition());
+    return Units.rotationsToDegrees(m_steerIntegratedEncoder.getPosition());
   }
 
   public double getDesiredAngleDegrees() {
@@ -126,6 +128,12 @@ public class SwerveModule {
 
   public double getCANCoderOffsetDegrees() {
     return m_steerAbsoluteEncoder.configGetMagnetOffset();
+  }
+
+  public void putData(String name) {
+    SmartDashboard.putNumber(name + " rotation", m_steerAbsoluteEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber(name + " vel", getVelocity());
+    SmartDashboard.putNumber(name + " desired vel", getDesiredVelocity());
   }
 
 }

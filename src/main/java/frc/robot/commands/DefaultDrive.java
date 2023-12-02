@@ -6,8 +6,8 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Util;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class DefaultDrive extends CommandBase {
@@ -30,8 +30,8 @@ public class DefaultDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveSubsystem.driveRobotOriented(new ChassisSpeeds(
-        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble()));
+    m_swerveSubsystem.driveRobotOriented(Util.discretizeChassisSpeeds(
+        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble(), 0.020));
   }
 
 }

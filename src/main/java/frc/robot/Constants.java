@@ -6,17 +6,17 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
 
   public static final class Swerve {
-    public static final double STEER_kP = 1.3;
+    public static final double STEER_kP = 3.0; // 1.3 before switching pid loops
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
-    public static final double STEER_RAMP_RATE = 0.5; // how many seconds to go from 0 to full throttle
+    public static final double STEER_RAMP_RATE = 0.15; // how many seconds to go from 0 to full throttle
 
-    public static final double DRIVE_kP = 0;
+    public static final double DRIVE_kP = 0.2;
     public static final double DRIVE_kI = 0;
     public static final double DRIVE_kD = 0;
-    public static final double DRIVE_kS = 0;
-    public static final double DRIVE_kV = 0;
-    public static final double DRIVE_RAMP_RATE = 0.5;
+    public static final double DRIVE_kS = 0.11;
+    public static final double DRIVE_kV = 3.0;
+    public static final double DRIVE_RAMP_RATE = 0.15;
 
     public static final double MAX_OUTPUT = 0.3;
 
@@ -29,8 +29,7 @@ public final class Constants {
         2.0 * Math.PI * Units.inchesToMeters(WHEEL_RADIUS) / DRIVE_GEAR_RATIO; // meters per rotation
     public static final double DRIVE_VELOCITY_CONVERSION = 
         DRIVE_POSITION_CONVERSION / 60.0; // meters per second
-    public static final double STEER_POSITION_CONVERSION =
-        1.0 / STEER_GEAR_RATIO; // rotations
+    public static final double STEER_POSITION_CONVERSION = 1 / STEER_GEAR_RATIO; // rotations
 
     public static final int FR_DRIVE_ID = 1;
     public static final int FL_DRIVE_ID = 2;
@@ -59,10 +58,10 @@ public final class Constants {
     public static final boolean BR_STEER_INVERTED = true;
     public static final boolean BL_STEER_INVERTED = true;
 
-    public static final double FR_OFFSET_DEGREES = -24.4; // 157.6
-    public static final double FL_OFFSET_DEGREES = -120.2; // 42.9
-    public static final double BR_OFFSET_DEGREES = -266.6; // 77.3
-    public static final double BL_OFFSET_DEGREES = -165.5; // 99.0
+    public static final double FR_OFFSET_DEGREES = -24.4;
+    public static final double FL_OFFSET_DEGREES = -120.2;
+    public static final double BR_OFFSET_DEGREES = -266.6;
+    public static final double BL_OFFSET_DEGREES = -165.5;
 
     public static final double APOTHEM = Units.inchesToMeters(10.625);
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);
