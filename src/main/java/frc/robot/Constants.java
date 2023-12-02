@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.I2C;
 
 public final class Constants {
 
@@ -10,17 +9,28 @@ public final class Constants {
     public static final double STEER_kP = 1.3;
     public static final double STEER_kI = 0;
     public static final double STEER_kD = 0;
+    public static final double STEER_RAMP_RATE = 0.5; // how many seconds to go from 0 to full throttle
+
+    public static final double DRIVE_kP = 0;
+    public static final double DRIVE_kI = 0;
+    public static final double DRIVE_kD = 0;
+    public static final double DRIVE_kS = 0;
+    public static final double DRIVE_kV = 0;
+    public static final double DRIVE_RAMP_RATE = 0.5;
 
     public static final double MAX_OUTPUT = 0.3;
 
     public static final boolean SQUARED_INPUTS = false;
 
     public static final double WHEEL_RADIUS = 2.0; // inches, need to double check
-    public static final double GEAR_RATIO = 8.14;
-    public static final double POSITION_CONVERSION = 
-        2.0 * Math.PI * Units.inchesToMeters(WHEEL_RADIUS) / GEAR_RATIO; // meters per rotation
-    public static final double VELOCITY_CONVERSION = 
-        POSITION_CONVERSION / 60.0; // meters per second
+    public static final double DRIVE_GEAR_RATIO = 8.14;
+    public static final double STEER_GEAR_RATIO = 150.0 / 7.0;
+    public static final double DRIVE_POSITION_CONVERSION = 
+        2.0 * Math.PI * Units.inchesToMeters(WHEEL_RADIUS) / DRIVE_GEAR_RATIO; // meters per rotation
+    public static final double DRIVE_VELOCITY_CONVERSION = 
+        DRIVE_POSITION_CONVERSION / 60.0; // meters per second
+    public static final double STEER_POSITION_CONVERSION =
+        1.0 / STEER_GEAR_RATIO; // rotations
 
     public static final int FR_DRIVE_ID = 1;
     public static final int FL_DRIVE_ID = 2;

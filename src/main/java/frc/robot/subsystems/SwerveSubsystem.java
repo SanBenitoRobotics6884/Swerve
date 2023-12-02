@@ -83,33 +83,20 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     for (int i = 0; i < 4; i++) {
       m_modulePositions[i] = m_modules[i].getModulePosition();
-    }
-          // this is for advantage scope
-    m_moduleMeasurements[0] = m_modules[1].getAngleDegrees(); // FL
-    m_moduleMeasurements[1] = m_modules[1].getVelocity();     // FL
-    m_moduleMeasurements[2] = m_modules[0].getAngleDegrees(); // FR
-    m_moduleMeasurements[3] = m_modules[0].getVelocity();     // FR
-    m_moduleMeasurements[4] = m_modules[3].getAngleDegrees(); // BL
-    m_moduleMeasurements[5] = m_modules[3].getVelocity();     // BL
-    m_moduleMeasurements[6] = m_modules[2].getAngleDegrees(); // BR
-    m_moduleMeasurements[7] = m_modules[2].getVelocity();     // BR
 
-    m_moduleSetpoints[0] = m_modules[1].getDesiredAngleDegrees(); // FL
-    m_moduleSetpoints[1] = m_modules[1].getVelocity();            // FL
-    m_moduleSetpoints[2] = m_modules[0].getDesiredAngleDegrees(); // FR
-    m_moduleSetpoints[3] = m_modules[0].getVelocity();            // FR
-    m_moduleSetpoints[4] = m_modules[3].getDesiredAngleDegrees(); // BL
-    m_moduleSetpoints[5] = m_modules[3].getVelocity();            // BL
-    m_moduleSetpoints[6] = m_modules[2].getDesiredAngleDegrees(); // BR
-    m_moduleSetpoints[7] = m_modules[2].getVelocity();            // BR
+      // advantage scope
+      m_moduleMeasurements[2 * i] = m_modules[i].getAngleDegrees();
+      m_moduleMeasurements[2 * i + 1] = m_modules[i].getVelocity();
+      m_moduleSetpoints[2 * i] = m_modules[i].getDesiredAngleDegrees();
+      m_moduleSetpoints[2 * i + 1] = m_modules[i].getDesiredVelocity();
+    }
 
     m_pose = m_odometry.update(getAngle(), m_modulePositions);
 
     m_poseAsArray[0] = -m_pose.getX();
     m_poseAsArray[1] = -m_pose.getY();
     m_poseAsArray[2] = m_pose.getRotation().getDegrees();
-
-    // this is for advantage scope
+    
     m_gyroAngle = m_gyro.getYaw();
     m_moduleMeasurementsPublisher.accept(m_moduleMeasurements);
     m_moduleSetpointsPublisher.accept(m_moduleSetpoints);
@@ -128,7 +115,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     for(int i = 0; i < 4; i++) {
       m_modules[i].setState(SwerveModuleState.optimize(
-          states[i], m_modules[i].getAngleMeasurement()));
+          states[i], m_modules[i].getRotation2d()));
     }
   }
 
@@ -156,7 +143,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
   public void setOffsetsToCANCoderMeasurement() {
     for (SwerveModule module : m_modules) {
-      module.setCANCoderOffsetDegrees(module.getDegrees());
+      module.setCANCoderOffsetDegrees(module.getAngleDegrees());
     }
   }
 
