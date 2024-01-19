@@ -12,18 +12,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArrayPublisher;
-import edu.wpi.first.networktables.DoubleArrayTopic;
 import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.DoubleTopic;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.SwerveModule;
 
 import static frc.robot.Constants.Swerve.*;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class SwerveSubsystem extends SubsystemBase {
   private SwerveModule[] m_modules = new SwerveModule[] {
@@ -83,44 +79,30 @@ public class SwerveSubsystem extends SubsystemBase {
   public void periodic() {
     for (int i = 0; i < 4; i++) {
       m_modulePositions[i] = m_modules[i].getModulePosition();
-    }
-          // this is for advantage scope
-    m_moduleMeasurements[0] = m_modules[1].getAngleDegrees(); // FL
-    m_moduleMeasurements[1] = m_modules[1].getVelocity();     // FL
-    m_moduleMeasurements[2] = m_modules[0].getAngleDegrees(); // FR
-    m_moduleMeasurements[3] = m_modules[0].getVelocity();     // FR
-    m_moduleMeasurements[4] = m_modules[3].getAngleDegrees(); // BL
-    m_moduleMeasurements[5] = m_modules[3].getVelocity();     // BL
-    m_moduleMeasurements[6] = m_modules[2].getAngleDegrees(); // BR
-    m_moduleMeasurements[7] = m_modules[2].getVelocity();     // BR
 
-    m_moduleSetpoints[0] = m_modules[1].getDesiredAngleDegrees(); // FL
-    m_moduleSetpoints[1] = m_modules[1].getVelocity();            // FL
-    m_moduleSetpoints[2] = m_modules[0].getDesiredAngleDegrees(); // FR
-    m_moduleSetpoints[3] = m_modules[0].getVelocity();            // FR
-    m_moduleSetpoints[4] = m_modules[3].getDesiredAngleDegrees(); // BL
-    m_moduleSetpoints[5] = m_modules[3].getVelocity();            // BL
-    m_moduleSetpoints[6] = m_modules[2].getDesiredAngleDegrees(); // BR
-    m_moduleSetpoints[7] = m_modules[2].getVelocity();            // BR
+      // advantage scope
+      m_moduleMeasurements[2 * i] = m_modules[i].getAngleDegrees();
+      m_moduleMeasurements[2 * i + 1] = m_modules[i].getVelocity();
+      m_moduleSetpoints[2 * i] = m_modules[i].getDesiredAngleDegrees();
+      m_moduleSetpoints[2 * i + 1] = m_modules[i].getDesiredVelocity();
+    }
 
     m_pose = m_odometry.update(getAngle(), m_modulePositions);
 
     m_poseAsArray[0] = -m_pose.getX();
     m_poseAsArray[1] = -m_pose.getY();
     m_poseAsArray[2] = m_pose.getRotation().getDegrees();
-
-    // this is for advantage scope
-    m_gyroAngle = m_gyro.getYaw();
+    
+    m_gyroAngle = m_gyro.getYaw().getValueAsDouble();
     m_moduleMeasurementsPublisher.accept(m_moduleMeasurements);
     m_moduleSetpointsPublisher.accept(m_moduleSetpoints);
     m_gyroAnglePublisher.accept(m_gyroAngle);
     m_posePublisher.accept(m_poseAsArray);
 
-    SmartDashboard.putNumber("FR", m_modules[0].getDriveEncoderPosition());
-    SmartDashboard.putNumber("FL", m_modules[1].getDriveEncoderPosition());
-    SmartDashboard.putNumber("BR", m_modules[2].getDriveEncoderPosition());
-    SmartDashboard.putNumber("BL", m_modules[3].getDriveEncoderPosition());
-
+    m_modules[0].putData("FR");
+    m_modules[1].putData("FL");
+    m_modules[2].putData("BR");
+    m_modules[3].putData("BL");
   }
 
   public void driveRobotOriented(ChassisSpeeds speeds) {
@@ -128,7 +110,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
     for(int i = 0; i < 4; i++) {
       m_modules[i].setState(SwerveModuleState.optimize(
-          states[i], m_modules[i].getAngleMeasurement()));
+          states[i], m_modules[i].getRotation2d()));
     }
   }
 
@@ -137,7 +119,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    return Rotation2d.fromDegrees(m_gyro.getYaw());
+    return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble());
   }
 
   public Pose2d getPose() {
@@ -148,21 +130,9 @@ public class SwerveSubsystem extends SubsystemBase {
     m_gyro.setYaw(0);
   }
 
-  public void setOffsetsToZero() {
-    for (SwerveModule module : m_modules) {
-      module.setCANCoderOffsetDegrees(0);
-    }
-  }
-
-  public void setOffsetsToCANCoderMeasurement() {
-    for (SwerveModule module : m_modules) {
-      module.setCANCoderOffsetDegrees(module.getDegrees());
-    }
-  }
-
-  public void printOffsets() {
-    for (SwerveModule module : m_modules) {
-      System.out.println(module.getCANCoderOffsetDegrees());
+  public void seedModuleMeasurements() {
+    for (int i = 0; i < 4; i++) {
+      m_modules[i].setIntegratedEncoderPositionToAbsoluteEncoderMeasurement();
     }
   }
 

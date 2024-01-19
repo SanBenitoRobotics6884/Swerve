@@ -7,10 +7,10 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveSubsystem;
 
-public class FieldDrive extends CommandBase {
+public class FieldDrive extends Command {
   private SwerveSubsystem m_swerveSubsystem;
   private DoubleSupplier m_forward;
   private DoubleSupplier m_strafe;
@@ -30,8 +30,8 @@ public class FieldDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_swerveSubsystem.driveFieldOriented(new ChassisSpeeds(
-        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble()));
+    m_swerveSubsystem.driveFieldOriented(ChassisSpeeds.discretize(
+        m_forward.getAsDouble(), m_strafe.getAsDouble(), m_rotation.getAsDouble(), 0.020));
   }
 
 }
