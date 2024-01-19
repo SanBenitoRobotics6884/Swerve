@@ -1,12 +1,14 @@
 package frc.robot;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix6.configs.MagnetSensorConfigs;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
-import com.revrobotics.CANSparkMax.ControlType;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,7 +24,7 @@ public class SwerveModule {
   private CANSparkMax m_driveMotor;
   private CANSparkMax m_steerMotor;
 
-  private CANCoder m_steerAbsoluteEncoder;
+  private CANcoder m_steerAbsoluteEncoder;
   private RelativeEncoder m_steerIntegratedEncoder;
   private RelativeEncoder m_driveEncoder;
 
@@ -39,24 +41,24 @@ public class SwerveModule {
     m_driveMotor.setInverted(driveInverted);
     m_steerMotor.setInverted(steerInverted);
 
-    m_steerAbsoluteEncoder = new CANCoder(encoderID);
-    CANCoderConfiguration config = new CANCoderConfiguration();
-    config.magnetOffsetDegrees = magnetOffset;
-    config.sensorCoefficient = 1.0 / 4096.0;
-    config.sensorDirection = !steerInverted;
-    config.unitString = "rot";
-    m_steerAbsoluteEncoder.configAllSettings(config);
+    m_steerAbsoluteEncoder = new CANcoder(encoderID);
+    MagnetSensorConfigs config = new MagnetSensorConfigs();
+    config.MagnetOffset = magnetOffset / 360.0;
+    config.SensorDirection = steerInverted ? 
+        SensorDirectionValue.Clockwise_Positive : SensorDirectionValue.CounterClockwise_Positive;
+    config.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+    m_steerAbsoluteEncoder.getConfigurator().apply(config);
 
     m_steerIntegratedEncoder = m_steerMotor.getEncoder();
     m_steerIntegratedEncoder.setPositionConversionFactor(STEER_POSITION_CONVERSION);
-    m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition());
+    m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
 
     m_driveEncoder = m_driveMotor.getEncoder();
     m_driveEncoder.setPosition(0);
     m_driveEncoder.setPositionConversionFactor(DRIVE_POSITION_CONVERSION);
     m_driveEncoder.setVelocityConversionFactor(DRIVE_VELOCITY_CONVERSION);
     
-    SparkMaxPIDController steerController = m_steerMotor.getPIDController();
+    SparkPIDController steerController = m_steerMotor.getPIDController();
     steerController.setPositionPIDWrappingMinInput(0);
     steerController.setPositionPIDWrappingMaxInput(1.0); // rotations
     steerController.setPositionPIDWrappingEnabled(true);
@@ -65,7 +67,7 @@ public class SwerveModule {
     steerController.setD(STEER_kD);
     m_steerMotor.setClosedLoopRampRate(STEER_RAMP_RATE);
 
-    SparkMaxPIDController driveController = m_driveMotor.getPIDController();
+    SparkPIDController driveController = m_driveMotor.getPIDController();
     driveController.setP(DRIVE_kP);
     driveController.setI(DRIVE_kI);
     driveController.setD(DRIVE_kD);
@@ -87,11 +89,11 @@ public class SwerveModule {
   }
 
   public void setIntegratedEncoderPositionToAbsoluteEncoderMeasurement() {
-    m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition());
+    m_steerIntegratedEncoder.setPosition(m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
   }
 
   public Rotation2d getRotation2d() {
-    return Rotation2d.fromRotations(m_steerAbsoluteEncoder.getAbsolutePosition());
+    return Rotation2d.fromRotations(m_steerIntegratedEncoder.getPosition());
   }
 
   public Rotation2d getDesiredRotation2d() {
@@ -122,16 +124,9 @@ public class SwerveModule {
     return m_velocityReference;
   }
 
-  public void setCANCoderOffsetDegrees(double degrees) {
-    m_steerAbsoluteEncoder.configMagnetOffset(degrees);
-  }
-
-  public double getCANCoderOffsetDegrees() {
-    return m_steerAbsoluteEncoder.configGetMagnetOffset();
-  }
 
   public void putData(String name) {
-    SmartDashboard.putNumber(name + " rotation", m_steerAbsoluteEncoder.getAbsolutePosition());
+    SmartDashboard.putNumber(name + " rotation", m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
     SmartDashboard.putNumber(name + " vel", getVelocity());
     SmartDashboard.putNumber(name + " desired vel", getDesiredVelocity());
   }

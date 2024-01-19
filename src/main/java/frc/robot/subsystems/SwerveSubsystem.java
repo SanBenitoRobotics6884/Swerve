@@ -19,7 +19,7 @@ import frc.robot.SwerveModule;
 
 import static frc.robot.Constants.Swerve.*;
 
-import com.ctre.phoenix.sensors.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 public class SwerveSubsystem extends SubsystemBase {
   private SwerveModule[] m_modules = new SwerveModule[] {
@@ -93,7 +93,7 @@ public class SwerveSubsystem extends SubsystemBase {
     m_poseAsArray[1] = -m_pose.getY();
     m_poseAsArray[2] = m_pose.getRotation().getDegrees();
     
-    m_gyroAngle = m_gyro.getYaw();
+    m_gyroAngle = m_gyro.getYaw().getValueAsDouble();
     m_moduleMeasurementsPublisher.accept(m_moduleMeasurements);
     m_moduleSetpointsPublisher.accept(m_moduleSetpoints);
     m_gyroAnglePublisher.accept(m_gyroAngle);
@@ -119,7 +119,7 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public Rotation2d getAngle() {
-    return Rotation2d.fromDegrees(m_gyro.getYaw());
+    return Rotation2d.fromDegrees(m_gyro.getYaw().getValueAsDouble());
   }
 
   public Pose2d getPose() {
@@ -133,24 +133,6 @@ public class SwerveSubsystem extends SubsystemBase {
   public void seedModuleMeasurements() {
     for (int i = 0; i < 4; i++) {
       m_modules[i].setIntegratedEncoderPositionToAbsoluteEncoderMeasurement();
-    }
-  }
-
-  public void setOffsetsToZero() {
-    for (SwerveModule module : m_modules) {
-      module.setCANCoderOffsetDegrees(0);
-    }
-  }
-
-  public void setOffsetsToCANCoderMeasurement() {
-    for (SwerveModule module : m_modules) {
-      module.setCANCoderOffsetDegrees(module.getAngleDegrees());
-    }
-  }
-
-  public void printOffsets() {
-    for (SwerveModule module : m_modules) {
-      System.out.println(module.getCANCoderOffsetDegrees());
     }
   }
 
