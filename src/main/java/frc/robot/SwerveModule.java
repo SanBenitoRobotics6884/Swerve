@@ -43,10 +43,10 @@ public class SwerveModule {
 
     m_steerAbsoluteEncoder = new CANcoder(encoderID);
     MagnetSensorConfigs config = new MagnetSensorConfigs();
-    config.MagnetOffset = magnetOffset / 360.0;
+    config.MagnetOffset = magnetOffset;
     config.SensorDirection = steerInverted ? 
-        SensorDirectionValue.Clockwise_Positive : SensorDirectionValue.CounterClockwise_Positive;
-    config.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+        SensorDirectionValue.CounterClockwise_Positive : SensorDirectionValue.Clockwise_Positive;
+    config.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf                ;
     m_steerAbsoluteEncoder.getConfigurator().apply(config);
 
     m_steerIntegratedEncoder = m_steerMotor.getEncoder();
@@ -81,7 +81,7 @@ public class SwerveModule {
   public void setState(SwerveModuleState state) {
     m_angleReference = state.angle;
     m_velocityReference = state.speedMetersPerSecond;
-
+    
     m_steerMotor.getPIDController().setReference(m_angleReference.getRotations(), ControlType.kPosition);
     m_driveMotor.getPIDController().setReference(
         m_velocityReference, ControlType.kVelocity, 0, 
@@ -124,11 +124,14 @@ public class SwerveModule {
     return m_velocityReference;
   }
 
-
   public void putData(String name) {
-    SmartDashboard.putNumber(name + " rotation", m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber(name + " cancoder rot", m_steerAbsoluteEncoder.getAbsolutePosition().getValueAsDouble());
+    SmartDashboard.putNumber(name + " neo rot", m_steerIntegratedEncoder.getPosition());
+    SmartDashboard.putNumber(name + " desired rot", m_angleReference.getRotations());
+    /**
     SmartDashboard.putNumber(name + " vel", getVelocity());
     SmartDashboard.putNumber(name + " desired vel", getDesiredVelocity());
+    */
   }
 
 }

@@ -31,20 +31,20 @@ public final class Constants {
         DRIVE_POSITION_CONVERSION / 60.0; // meters per second
     public static final double STEER_POSITION_CONVERSION = 1 / STEER_GEAR_RATIO; // rotations
 
-    public static final int FR_DRIVE_ID = 1;
-    public static final int FL_DRIVE_ID = 2;
-    public static final int BR_DRIVE_ID = 3;
-    public static final int BL_DRIVE_ID = 4;
+    public static final int BR_DRIVE_ID = 1;
+    public static final int FR_DRIVE_ID = 2;
+    public static final int BL_DRIVE_ID = 3;
+    public static final int FL_DRIVE_ID = 4;
 
-    public static final int FR_STEER_ID = 5;
-    public static final int FL_STEER_ID = 6;
-    public static final int BR_STEER_ID = 7;
-    public static final int BL_STEER_ID = 8;
+    public static final int BR_STEER_ID = 5;
+    public static final int FR_STEER_ID = 6;
+    public static final int BL_STEER_ID = 7;
+    public static final int FL_STEER_ID = 8;
 
-    public static final int FR_ENCODER_ID = 9;
-    public static final int FL_ENCODER_ID = 10;
-    public static final int BR_ENCODER_ID = 11;
-    public static final int BL_ENCODER_ID = 12;
+    public static final int BR_ENCODER_ID = 9;
+    public static final int FR_ENCODER_ID = 10;
+    public static final int BL_ENCODER_ID = 11;
+    public static final int FL_ENCODER_ID = 12;
 
     public static final int PIGEON_ID = 13;
 
@@ -58,10 +58,10 @@ public final class Constants {
     public static final boolean BR_STEER_INVERTED = true;
     public static final boolean BL_STEER_INVERTED = true;
 
-    public static final double FR_OFFSET_DEGREES = -24.4;
-    public static final double FL_OFFSET_DEGREES = -120.2;
-    public static final double BR_OFFSET_DEGREES = -266.6;
-    public static final double BL_OFFSET_DEGREES = -165.5;
+    public static final double FR_OFFSET_ROTATIONS = 0.1644; //0.1652;
+    public static final double FL_OFFSET_ROTATIONS = 0.5406; //0.0405;
+    public static final double BR_OFFSET_ROTATIONS = 0.9320; //0.9318;
+    public static final double BL_OFFSET_ROTATIONS = 0.2593; //0.7595;
 
     public static final double APOTHEM = Units.inchesToMeters(10.625);
     public static final Translation2d FR_LOCATION = new Translation2d(APOTHEM, -APOTHEM);

@@ -25,16 +25,16 @@ public class SwerveSubsystem extends SubsystemBase {
   private SwerveModule[] m_modules = new SwerveModule[] {
     new SwerveModule(
         FR_DRIVE_ID, FR_STEER_ID, FR_ENCODER_ID, 
-        FR_DRIVE_INVERTED, FR_STEER_INVERTED, FR_OFFSET_DEGREES),
+        FR_DRIVE_INVERTED, FR_STEER_INVERTED, FR_OFFSET_ROTATIONS),
     new SwerveModule(
         FL_DRIVE_ID, FL_STEER_ID, FL_ENCODER_ID, 
-        FL_DRIVE_INVERTED, FL_STEER_INVERTED, FL_OFFSET_DEGREES),
+        FL_DRIVE_INVERTED, FL_STEER_INVERTED, FL_OFFSET_ROTATIONS),
     new SwerveModule(
         BR_DRIVE_ID, BR_STEER_ID, BR_ENCODER_ID, 
-        BR_DRIVE_INVERTED, BR_STEER_INVERTED, BR_OFFSET_DEGREES),
+        BR_DRIVE_INVERTED, BR_STEER_INVERTED, BR_OFFSET_ROTATIONS),
     new SwerveModule(
         BL_DRIVE_ID, BL_STEER_ID, BL_ENCODER_ID, 
-        BL_DRIVE_INVERTED, BL_STEER_INVERTED, BL_OFFSET_DEGREES)};
+        BL_DRIVE_INVERTED, BL_STEER_INVERTED, BL_OFFSET_ROTATIONS)};
 
   private SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       FR_LOCATION,
